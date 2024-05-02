@@ -56,14 +56,14 @@ const HomePage = () => {
             // Assign colors for different categories
             categories.forEach((category) => {
                 if (category === "saving") {
-                    backgroundColors.push("rgba(75, 192, 192)");
-                    borderColors.push("rgba(75, 192, 192)");
+                    backgroundColors.push("rgba(75, 192, 192, 0.8)");
+                    borderColors.push("rgba(75, 192, 192, 0.8)");
                 } else if (category === "expense") {
-                    backgroundColors.push("rgba(255, 99, 132)");
-                    borderColors.push("rgba(255, 99, 132)");
+                    backgroundColors.push("rgba(255, 99, 132, 0.8)");
+                    borderColors.push("rgba(255, 99, 132, 0.8)");
                 } else if (category === "investment") {
-                    backgroundColors.push("rgba(54, 162, 235)");
-                    borderColors.push("rgba(54, 162, 235)");
+                    backgroundColors.push("rgba(54, 162, 235, 0.8)");
+                    borderColors.push("rgba(54, 162, 235, 0.8)");
                 }
             });
 
@@ -84,44 +84,53 @@ const HomePage = () => {
 
     // Handle user logout
     const handleLogout = async () => {
-        try {
-            // Perform logout mutation
-            await logout();
+        // Show a confirmation dialog box
+        const confirmLogout = window.confirm("Are you sure you want to exit?");
 
-            // Reset Apollo client cache
-            client.resetStore();
-        } catch (error) {
-            console.error("Error logging out:", error);
-            toast.error(error.message);
+        // If the user clicks "OK", proceed with logout
+        if (confirmLogout) {
+            try {
+                // Perform logout mutation
+                await logout();
+
+                // Reset Apollo client cache
+                client.resetStore();
+            } catch (error) {
+                console.error("Error logging out:", error);
+                toast.error(error.message);
+            }
         }
     };
 
     // Render the HomePage component
     return (
         <>
-            <div className='flex flex-col gap-6 items-center max-w-7xl mx-auto z-20 relative justify-center'>
-                <div className='flex items-center'>
-                    <p className='md:text-4xl text-2xl lg:text-4xl font-bold text-center relative z-50 mb-4 mr-4 bg-gradient-to-r from-pink-600 via-indigo-500 to-pink-400 inline-block text-transparent bg-clip-text'>
+            <div className="flex flex-col gap-6 items-center max-w-7xl mx-auto z-20 relative justify-center">
+                <div className="flex items-center">
+                    <p className="md:text-4xl text-2xl lg:text-4xl font-bold text-center relative z-50 mb-4 mr-4 bg-gradient-to-r from-pink-600 via-indigo-500 to-pink-400 inline-block text-transparent bg-clip-text">
                         Spend wisely, track wisely
                     </p>
                     <img
                         src={authUserData?.authUser.profilePicture}
-                        className='w-11 h-11 rounded-full border cursor-pointer'
-                        alt='Avatar'
+                        className="w-11 h-11 rounded-full border cursor-pointer"
+                        alt="Avatar"
                     />
                     {!loading && (
                         // Render logout button when not loading
-                        <MdLogout className='mx-2 w-5 h-5 cursor-pointer' onClick={handleLogout} />
+                        <MdLogout
+                            className="mx-2 w-5 h-5 cursor-pointer"
+                            onClick={handleLogout}
+                        />
                     )}
                     {/* Loading spinner while logging out */}
                     {loading && (
-                        <div className='w-6 h-6 border-t-2 border-b-2 mx-2 rounded-full animate-spin'></div>
+                        <div className="w-6 h-6 border-t-2 border-b-2 mx-2 rounded-full animate-spin"></div>
                     )}
                 </div>
-                <div className='flex flex-wrap w-full justify-center items-center gap-6'>
+                <div className="flex flex-wrap w-full justify-center items-center gap-6">
                     {/* Display Doughnut chart if there is transaction statistics data */}
                     {data?.categoryStatistics.length > 0 && (
-                        <div className='h-[330px] w-[330px] md:h-[360px] md:w-[360px]  '>
+                        <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]">
                             <Doughnut data={chartData} />
                         </div>
                     )}
@@ -134,5 +143,4 @@ const HomePage = () => {
         </>
     );
 };
-
 export default HomePage;
